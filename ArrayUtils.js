@@ -1,5 +1,5 @@
 const sortSiblings = array => {
-  return array.sort(({ previousSiblingId: a }, { previousSiblingId: b }) => {
+  return [...array].sort(({ previousSiblingId: a }, { previousSiblingId: b }) => {
     if (a === b) return 0;
 
     // nulls to the top
@@ -11,17 +11,19 @@ const sortSiblings = array => {
   });
 };
 
-const arrayToTree = (array, parentId = null) => {
-  // handle empties and nulls
+const arrayToTree = array => {
   if (!array) return null;
   if (!array.length) return [];
 
-  // build tree
+  return buildTree(array);
+}
+
+const buildTree = (array, parentId = null) => {
   return sortSiblings(array
     .filter(node => node.parentId === parentId))
     .map(item => ({
       ...item,
-      children: arrayToTree(array, item.nodeId)
+      children: buildTree(array, item.nodeId)
     }));
 }
 
